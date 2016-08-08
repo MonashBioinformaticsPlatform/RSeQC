@@ -1,0 +1,10 @@
+include MANIFEST.in
+include README.rst
+
+include distribute_setup.py
+recursive-include lib *.pyx
+recursive-include lib *.pxd
+recursive-include src *.py
+
+include doc/*
+

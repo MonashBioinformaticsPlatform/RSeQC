@@ -1,0 +1,39 @@
+Installation guide for RSeQC
+==============================
+
+
+Use pip to install RSeQC
+------------------------
+
+You must first install pip following the instructions: https://pypi.python.org/pypi/pip
+Then type:
+pip install RSeQC
+
+
+Install RSeQC from source code (Not recommended)
+------------------------------------------------
+
+Prerequisite:
+   * gcc
+   * python2.7
+   * numpy
+   * If your computer can not connnect to internet, nose>= 0.10.4 and distribute-0.6.10 are also required. 
+
+Below is an example of installing RSeQC on Linux system using BASH. You need to change '--root' directory, PYTHONPATH and PATH accordingly
+
+    1) tar zxf RSeQC-VERSION.tar.gz
+    2) cd RSeQC-VERSION
+    3) python setup.py install 					#will install RSeQC in system level. require root previledge
+    4) python setup.py install --root=/home/user/RSeQC 		#will install RSeQC at user specified location
+    5) export PYTHONPATH=/home/user/RSeQC/usr/local/lib/python2.7/site-packages:$PYTHONPATH. #setup PYTHONPATH, so that RSeQC knows where to import modules
+    6) export PATH=/home/user/RSeQC/usr/local/bin:$PATH 	#setup PATH, so that system knows where to find executable file 
+
+NOTE:
+    * To install RSeQC on MAC OSX, user need to download and install Xcode beforehand.
+    * To produce graphical outputs, R must be installed.
+    * If the installation failed with error like: /usr/bin/ld: cannot find -lz, you may need to install a shared zlib library on your system. 
+
+
+Online Manual:
+http://rseqc.sourceforge.net/
+

@@ -1,0 +1,2 @@
+qcmodule
+psyco_full
