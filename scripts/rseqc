@@ -1,3 +1,39 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-15 -*-
-print "Hey"
+
+import os
+import argparse
+
+# create the top-level parser
+parser = argparse.ArgumentParser(add_help=True)
+
+subparsers = parser.add_subparsers(help='sub-command help')
+
+parser_read_dist = subparsers.add_parser('bam_stats',
+                                         help = 'Summarizing mapping statistics of a BAM or SAM file'
+                                         )
+parser_read_dist.add_argument('-i', '--input_file',
+                              required = True,
+                              help = 'specify your alignment file in SAM or BAM format'
+                              )
+parser_read_dist.add_argument('-q', '--mapq',
+                              help = 'Minimum mapping quality to determine uniquely mapped read'
+                              )
+
+parser_read_dist = subparsers.add_parser('read_dist',
+                                         help = 'This will be help description for read_dist option'
+                                         )
+parser_read_dist.add_argument('-i', '--input_file',
+                              required = True,
+                              help = 'specify your alignment file in SAM or BAM format'
+                              )
+parser_read_dist.add_argument('-g', '--gene_models',
+                              required = True,
+                              help = 'specify your gene_models file in BED12 or GTF format'
+                              )
+args = parser.parse_args()
+#dir = args.dir
+#coord = args.coord
+#host_name = args.host_name
+#igvFile = args.igvFile
+#genome = args.genome
