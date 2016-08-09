@@ -4,13 +4,16 @@
 import os
 from setuptools import setup
 
+readme = open('README.rst', 'r')
+README_TEXT = readme.read()
+
 setup(
     name = "RSeQC",
     version = "2.6.4",
     author = "Liguo Wang",
     author_email ="wangliguo78@gmail.com",
     description = ("RNA-seq QC Package"),
-    long_description=read('README'),
+    long_description=README_TEXT,
     license = "GPLv2",
     keywords='RNA-seq, RNAseq, QC, metrics',
     url = "https://github.com/MonashBioinformaticsPlatform/RSeQC",
@@ -21,7 +24,7 @@ setup(
         'pysam',
         'bx-python'
         ], 
-    packages=['RSeQC']
+    packages=['rseqc']
     )
 
 #platforms = ['Linux','MacOS'],
