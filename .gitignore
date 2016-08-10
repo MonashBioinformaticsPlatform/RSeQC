@@ -10,3 +10,6 @@
 
 #
 /build/
+
+#text editor specific files - VIM
+*.swp
