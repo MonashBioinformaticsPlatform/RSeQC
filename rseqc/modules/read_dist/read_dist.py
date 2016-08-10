@@ -156,23 +156,15 @@ def process_gene_model(gene_model):
 			int_up1k_size,int_up5k_size,int_up10k_size,\
 			int_down1k_size,int_down5k_size,int_down10k_size)
 	
-def main():
-	usage="%prog [options]" + '\n' + __doc__ + "\n"
-	parser = OptionParser(usage,version="%prog " + __version__)
-	parser.add_option("-i","--input-file",action="store",type="string",dest="input_file",help="Alignment file in BAM or SAM format.")
-	parser.add_option("-r","--refgene",action="store",type="string",dest="ref_gene_model",help="Reference gene model in bed format.")
-	(options,args)=parser.parse_args()
-		
-	if not (options.input_file and options.ref_gene_model):
-		parser.print_help()
-		sys.exit(0)
-	if not os.path.exists(options.ref_gene_model):
-		print >>sys.stderr, '\n\n' + options.ref_gene_model + " does NOT exists" + '\n'
-		#parser.print_help()
-		sys.exit(0)
-	if not os.path.exists(options.input_file):
-		print >>sys.stderr, '\n\n' + options.input_file + " does NOT exists" + '\n'
-		sys.exit(0)		
+def main(input_file, gene_models):
+
+	#if not os.path.exists(gene_models):
+	#	print >>sys.stderr, '\n\n' + gene_models + " does NOT exists" + '\n'
+	#	#parser.print_help()
+	#	sys.exit(0)
+	#if not os.path.exists(input_file):
+	#	print >>sys.stderr, '\n\n' + input_file + " does NOT exists" + '\n'
+	#	sys.exit(0)		
 
 	#build bitset
 	(cds_exon_r, intron_r, utr_5_r, utr_3_r,\
@@ -180,7 +172,7 @@ def main():
 	intergenic_down_1kb_r,intergenic_down_5kb_r,intergenic_down_10kb_r,\
 	cds_exon_base,intron_base,utr_5_base,utr_3_base,\
 	intergenic_up1kb_base,intergenic_up5kb_base,intergenic_up10kb_base,\
-	intergenic_down1kb_base,intergenic_down5kb_base,intergenic_down10kb_base) = process_gene_model(options.ref_gene_model)
+	intergenic_down1kb_base,intergenic_down5kb_base,intergenic_down10kb_base) = process_gene_model(gene_models)
 	
 	intron_read=0
 	cds_exon_read=0
@@ -197,14 +189,14 @@ def main():
 	totalReads=0
 	totalFrags=0
 	unAssignFrags=0
-	obj = SAM.ParseBAM(options.input_file)
+	obj = SAM.ParseBAM(input_file)
 	
 	R_qc_fail=0
 	R_duplicate=0
 	R_nonprimary=0
 	R_unmap=0
 	
-	print >>sys.stderr, "processing " + options.input_file + " ...",
+	print >>sys.stderr, "processing " + input_file + " ...",
 	try:
 		while(1):
 			aligned_read = obj.samfile.next()
@@ -290,5 +282,5 @@ def main():
 	print  "%-20s%-20d%-20d%-18.2f" % ("TES_down_10kb",intergenic_down10kb_base, intergenic_down10kb_read, intergenic_down10kb_read*1000.0/(intergenic_down10kb_base+1))
 	print  "====================================================================="
 	
-if __name__ == '__main__':
-	main()
+#if __name__ == '__main__':
+#	main()

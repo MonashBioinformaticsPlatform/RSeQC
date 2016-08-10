@@ -4,25 +4,30 @@
 import os
 import argparse
 
-from modules import read_dist
+#from modules import read_dist
+
 # create the top-level parser
+
 parser = argparse.ArgumentParser(add_help=True)
 
-subparsers = parser.add_subparsers(help='sub-command help')
-
-parser_read_dist = subparsers.add_parser('bam_stats',
+subparsers = parser.add_subparsers(help='sub-command help',
+                                   dest = 'command'
+                                   )
+# bam_stats options
+parser_bam_stats = subparsers.add_parser('bam_stats',
                                          help = 'Summarizing mapping statistics of a BAM or SAM file'
                                          )
-parser_read_dist.add_argument('-i', '--input_file',
+parser_bam_stats.add_argument('-i', '--input_file',
                               required = True,
                               help = 'specify your alignment file in SAM or BAM format'
                               )
-parser_read_dist.add_argument('-q', '--mapq',
+parser_bam_stats.add_argument('-q', '--mapq',
+                              default = 30,
                               help = 'Minimum mapping quality to determine uniquely mapped read'
                               )
-
+# read_distribution options
 parser_read_dist = subparsers.add_parser('read_dist',
-                                         help = 'This will be help description for read_dist option'
+                                         help = 'Get read distribution amongst gene feature, e.g exon, intron etc.'
                                          )
 parser_read_dist.add_argument('-i', '--input_file',
                               required = True,
@@ -32,9 +37,19 @@ parser_read_dist.add_argument('-g', '--gene_models',
                               required = True,
                               help = 'specify your gene_models file in BED12 or GTF format'
                               )
+
 args = parser.parse_args()
-#dir = args.dir
-#coord = args.coord
-#host_name = args.host_name
-#igvFile = args.igvFile
-#genome = args.genome
+
+print args.command
+
+input_file = args.input_file
+
+#TODO pass args.command into a function and let function to decide which sub-function to invoke for data processing
+
+if args.command == 'bam_stats':
+    mapq = args.mapq
+if args.command == 'read_dist':
+    gene_models = args.gene_models
+
+print input_file
+
