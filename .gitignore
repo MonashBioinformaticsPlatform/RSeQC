@@ -13,3 +13,6 @@
 
 #text editor specific files - VIM
 *.swp
+
+# sample data
+/sample-data/

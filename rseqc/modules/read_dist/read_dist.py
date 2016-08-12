@@ -32,9 +32,10 @@ from bx_extras.fpconst import isNaN
 from bx.bitset_utils import *
 
 #import my own modules
-from qcmodule import BED
-from qcmodule import SAM
-from qcmodule import bam_cigar
+#from rseqc.qcmodule import BED
+from rseqc.parsers import BED
+from rseqc.qcmodule import SAM
+from rseqc.qcmodule import bam_cigar
 
 def cal_size(list):
 	'''calcualte bed list total size'''
@@ -63,9 +64,11 @@ def build_bitsets(list):
 
 def process_gene_model(gene_model):
 	print >>sys.stderr, "processing " + gene_model + ' ...',
+        # get gene_models into BED object
 	obj = BED.ParseBED(gene_model)
-	utr_3 = obj.getUTR(utr=3)
-	utr_5 = obj.getUTR(utr=5)
+        # get certain aspects from that object
+	utr_3 = obj.getUTR(utr = 3)
+	utr_5 = obj.getUTR(utr = 5)
 	cds_exon = obj.getCDSExon()
 	intron = obj.getIntron()
 	

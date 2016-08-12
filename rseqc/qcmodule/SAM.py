@@ -20,10 +20,10 @@ from bx.binned_array import BinnedArray
 from bx_extras.fpconst import isNaN
 from bx.bitset_utils import *
 import pysam
-from qcmodule import mystat
-from qcmodule import fasta
-from qcmodule import bam_cigar
-from qcmodule import BED
+from rseqc.qcmodule import mystat
+from rseqc.qcmodule import fasta
+from rseqc.qcmodule import bam_cigar
+from rseqc.qcmodule import BED
 #changes to the paths
 
 #changing history to this module

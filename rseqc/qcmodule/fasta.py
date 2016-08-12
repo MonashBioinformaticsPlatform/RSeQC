@@ -8,7 +8,7 @@ import sys
 from string import maketrans
 from optparse import OptionParser
 import collections
-from qcmodule import FrameKmer
+from rseqc.qcmodule import FrameKmer
 #import third-party modules
 
 #changes to the paths

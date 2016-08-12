@@ -14,7 +14,6 @@ setup(
     keywords = 'RNA-seq, RNAseq, QC, metrics',
     url = "https://github.com/MonashBioinformaticsPlatform/RSeQC",
     scripts = ['scripts/rseqc'],
-    setup_requires=['numpy'],
     install_requires = [
         'cython',
         'numpy',
@@ -25,6 +24,7 @@ setup(
     zip_safe=False
     )
 
+#setup_requires=['numpy'],
 #platforms = ['Linux','MacOS'],
 #classifiers=[
 #    "Development Status :: 3 - Alpha",
