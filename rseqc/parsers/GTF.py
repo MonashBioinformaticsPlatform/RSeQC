@@ -214,6 +214,58 @@ class GenesObj(ParseGTF):
                 self.exons.append([chr, v['start'], v['end'], k, strand, gene_name, 'NA'])
         return self.exons
 
+    def get_introns(self, biotype = 'protein_coding'):
+        '''
+        Extract introns regions from GTF file and outputs a list of lists, where nested lists 
+        are individual exons and nested list has the following format:
+
+        Return:
+
+        [.., [Chr, Start, End, Id, Strand, Name, Biotype], ..]
+
+        Usage:
+
+        - biotype['protein_coding'], user can optionaly pass in either a string or a list 
+
+            - biotype = 'snRNA'
+            - biotype = ['snRNA', 'lnRNA']
+
+        '''
+
+        biotypes = biotype
+        if isinstance(biotype, str):
+            biotypes = [biotype] 
+
+        introns = []
+
+        prefix = 'ENSMUSI'
+        counter = 0
+  
+        for gene_obj in self.genes:
+            gid = gene_obj[3]
+            gname = gene_obj[5]
+            strand = gene_obj[4]
+            chr = gene_obj[0]
+            obj = self.models_dict[gid]
+            tdict = obj['tscripts']
+
+            for t, v in tdict.items():
+                ttype = v['ttype']
+                eids = v['exons_id']
+
+                if ttype in biotypes:
+
+                    starts = [obj['exons'][e]['start'] for e in eids]
+                    starts.sort()
+                    ends = [obj['exons'][e]['start'] for e in eids]
+                    ends.sort()
+
+                    for i in xrange(len(ends)-1):
+                        introns.append([chr, ends[i], starts[i+1], prefix+str(counter), strand, gname, ttype])
+                        counter += 1
+
+        return introns
+
     def get_3prime_utrs(self, biotype = "protein_coding", tsl = 1, all_tscripts = False):
         '''
         Extract UTR regions from GTF file and otputs a list of lists, where nested lists are
