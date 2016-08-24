@@ -1,0 +1,46 @@
+{GeneId: {Chromosome: chr,
+
+          Strand: strnd,
+
+          Gene_biotype: gtype,
+
+          Gene_name: name,
+ 
+          Tag: tag,
+
+          Exons: {ExonId: {start: value, end: value},
+                  ExonId: {start: value, end: value},
+                  ExonId: {start: value, end: value}
+                 },
+
+          Transcripts: {TranscriptId_1: {ExonIds: [exon_1, exon_3, exon_4],
+                                         CDS: {start: value, end: value},
+                                         tprime_utr: {start: value, end: value},
+                                         fprime_utr: {start: value, end: value},
+                                         ATG: value_1,
+                                         TGA: value_1,
+                                         transcript_biotype: type,
+                                         transcript_support_level: value
+                                         },
+
+                        TranscriptId_2: {ExonIds: [exon_2, exon_3, exon_5],
+                                         CDS: {start: value, end: value},
+                                         tprime_utr: {start: value, end: value},
+                                         fprime_utr: {start: value, end: value},
+                                         ATG: value_2,
+                                         TGA: value_2,
+                                         transcript_biotype: type,
+                                         transcript_support_level: value
+                                         },
+                        TranscriptId_3: {ExonIds: [exon_5, exon_4, exon_6],
+                                         CDS: {start: value, end: value},
+                                         tprime_utr: {start: value, end: value},
+                                         fprime_utr: {start: value, end: value},
+                                         ATG: value_3,
+                                         TGA: value_3,
+                                         transcript_biotype: type,
+                                         transcript_support_level: value
+                                         },
+                        },
+           }
+}
