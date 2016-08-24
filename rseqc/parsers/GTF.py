@@ -11,12 +11,6 @@ import re
 class ParseGTF(object):
     def __init__(self, gene_models, chr = "all"):
         '''This is constructor of ParseGTF that make special gtf object'''
-        # make sure that BED file is at least 12 columns.
-        # You are allowed to have more than 12 columns in the BED file
-        # but need to figure out how to jump ahead cause first few lines could be header lines
-        # assert len(self.file_handler.readline()) >= 12
-        #assert gene_models.endswith(".bed")
-        #self.gm = open(gene_models, 'r')
 
         tags_regex = "\\s.([A-z0-9_.-]+)"
         tags_dict = {
