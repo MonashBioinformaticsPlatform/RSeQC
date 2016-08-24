@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-15 -*-
 
-#obj = BED.ParseBED(gene_model)
-# get certain aspects from that object
-#utr_3 = obj.getUTR(utr = 3)
-
 import sys
 import re
 
