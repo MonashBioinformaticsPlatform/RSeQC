@@ -1,12 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-15 -*-
 
+#__version__ = "0.0.2"
+
 import sys
 import re
+
+#TODO include support for gziped files
 
 class ParseGTF(object):
     def __init__(self, gene_models, chr = "all"):
         '''This is constructor of ParseGTF that make special gtf object'''
+
+        assert gene_models.split('.')[-1] == 'gtf'
 
         tags_regex = "\\s.([A-z0-9_.-]+)"
         tags_dict = {
@@ -40,6 +46,7 @@ class ParseGTF(object):
                 if not line.startswith("#"):
                     if go or chk_chr.group(1) == str(chr):
                         items = line.split('\t')
+
                         assert len(items) == 9
 
                         chk_gid = re.search(tags_dict['gid'], items[8])
@@ -227,6 +234,64 @@ class GeneModels(ParseGTF):
                     return [g for g in self.genes if g['strand'] == strand and g['chr'] in chrs]
                 else:
                     return [g for g in self.genes if g['strand'] == strand and g['chr'] in chrs and g['biotype'] in biotypes]
+
+    def get_cds(self):
+        '''
+        Chr, Start, End, Id, Strand, Name, Biotype
+        '''
+
+        cds = []
+
+        for gene_obj in self.genes:
+            gid = gene_obj['id']
+            gname = gene_obj['name']
+            chr = gene_obj['chr']
+            strand = gene_obj['strand']
+            obj = self.models_dict[gid]
+            tdict = obj['tscripts']
+
+            for k, v in tdict.items():
+                start = v['cds']['start']
+                end = v['cds']['end']
+                ttype = v['ttype']
+                eids = v['exons_id']
+ 
+                if start != 'NA':
+                    if strand == '+':
+                        cds.append({'chr': chr, 'start': start, 'end': end, 'id': k, 'strand': strand, 'name': gname, 'biotype': ttype})
+                    else:
+                        cds.append({'chr': chr, 'start': end, 'end': start, 'id': k, 'strand': strand, 'name': gname, 'biotype': ttype})
+                else:
+                    atg = v['ATG']
+                    tga = v['TGA']
+                    if atg != 'NA' and tga != 'NA':
+                        cds.append({'chr': chr, 'start': atg, 'end': tga, 'id': k, 'strand': strand, 'name': gname, 'biotype': ttype})
+                    elif atg == 'NA' and tga == 'NA':
+                        if strand == '+':
+                            start = min([obj['exons'][e]['end'] for e in eids])
+                            end = max([obj['exons'][e]['end'] for e in eids])
+                            cds.append({'chr': chr, 'start': start, 'end': end, 'id': k, 'strand': strand, 'name': gname, 'biotype': ttype})
+                        else:
+                            start = max([obj['exons'][e]['end'] for e in eids])
+                            end = min([obj['exons'][e]['end'] for e in eids])
+                            cds.append({'chr': chr, 'start': start, 'end': end, 'id': k, 'strand': strand, 'name': gname, 'biotype': ttype})
+                    else:
+                        if atg == 'NA':
+                            if strand == '+':
+                                start = min([obj['exons'][e]['end'] for e in eids])
+                                cds.append({'chr': chr, 'start': start, 'end': tga, 'id': k, 'strand': strand, 'name': gname, 'biotype': ttype})
+                            else:
+                                start = max([obj['exons'][e]['end'] for e in eids])
+                                cds.append({'chr': chr, 'start': start, 'end': tga, 'id': k, 'strand': strand, 'name': gname, 'biotype': ttype})
+                        if tga == 'NA':
+                            if strand == '+':
+                                end = max([obj['exons'][e]['end'] for e in eids])
+                                cds.append({'chr': chr, 'start': atg, 'end': end, 'id': k, 'strand': strand, 'name': gname, 'biotype': ttype})
+                            else:
+                                end = min([obj['exons'][e]['end'] for e in eids])
+                                cds.append({'chr': chr, 'start': atg, 'end': end, 'id': k, 'strand': strand, 'name': gname, 'biotype': ttype})
+
+        return cds
 
     def get_tscripts(self):
         #TODO doesn't look like this method had been finished
