@@ -141,10 +141,10 @@ class ParseGTF(object):
             for t, v in exons_dict[g].items():
                 self.models_dict[g]['tscripts'][t]['exons_id'] = v
 
-class GenesObj(ParseGTF):
+class GeneModels(ParseGTF):
 
     def __init__(self, gene_models, chr = "all"):
-        super(GenesObj, self).__init__(gene_models, chr = chr)
+        super(GeneModels, self).__init__(gene_models, chr = chr)
 
         self.genes = []
 
@@ -156,22 +156,80 @@ class GenesObj(ParseGTF):
             gstart = min([v['start'] for v in edict.values()])
             gend = max([v['end'] for v in edict.values()])
 
-            self.genes.append([chr, gstart, gend, gene, strand, attr['gname'], attr['gtype']])
+            self.genes.append({'chr': chr,
+                               'start': gstart,
+                               'end': gend,
+                               'id': gene,
+                               'strand': strand,
+                               'name': attr['gname'],
+                               'biotype': attr['gtype']
+                               })
 
-    def get_genes(self, strand = 'both'):
+    def get_genes(self, chr = 'all', strand = 'both', biotype = 'protein_coding'):
         '''
-        Returns a list of lists, where nested list contains seven elements
-        Chr, Start, End, Id, Strand, Name, Biotype
-        Each nested list has gene elements
-        Use can filter particular strand using `strand = 'both'`, `strand = '+'` or `strand = '-'` options
+        Returns a list of lists, where nested list contains seven elements, where each nested list contains gene's elements
+       
+        Return:
+
+        [.., {'chr': CHR, 'start': START, 'end': END, 'id': ID, 'strand': STRAND, 'name': NAME, 'biotype': BIOTYPE], ..]
+
+        Usage:
+
+        - chr['all'], user can optinally pass in either a string or a list to filter chromosomes of interest
+
+            - chr = 1 or '1' either will work
+            - chr = [1, 13, 20] or ['1', '13', '20'] either will work
+            - chr = 'all' is a special keyword that returns all chromosomes
+
+        - strand['both'], user can optionally pass in either of the strands in to filter based on gene strand
+
+            - strand = '+'
+            - strand = '-'
+            - strand = 'both' is a special keyword to get both strands
+
+        - biotype['protein_coding'], user can optionaly pass in either a string or a list 
+ 
+            - biotype = 'snRNA'
+            - biotype = ['snRNA', 'lnRNA']
+            - biotype = 'all' is a special keyword that returns all biotypes
         '''
-        
-        if strand == 'both':
-            return self.genes
+        assert isinstance(strand, str)
+
+        tmp = chr
+        if chr != 'all' and ( isinstance(chr, str) or isinstance(chr, int) ):
+            tmp = [chr] 
+        # make sure all entries are converted to strings
+        chrs = map(str, tmp)
+
+        biotypes = biotype
+        if isinstance(biotype, str):
+            biotypes = [biotype] 
+
+        if chr == 'all':
+            if strand == 'both':
+                if biotype == 'all':
+                    return self.genes
+                else:
+                    return [g for g in self.genes if g['biotype'] in biotypes]
+            else:
+                if biotype == 'all':
+                    return [g for g in self.genes if g['strand'] == strand]
+                else:
+                    return [g for g in self.genes if g['strand'] == strand and g['biotype'] in biotypes]
         else:
-            return [g for g in self.genes if g[4] == strand]
+            if strand == 'both':
+                if biotype == 'all':
+                    return [g for g in self.genes if g['chr'] in chrs]
+                else:
+                    return [g for g in self.genes if g['chr'] in chrs and g['biotype'] in biotypes]
+            else:
+                if biotype == 'all':
+                    return [g for g in self.genes if g['strand'] == strand and g['chr'] in chrs]
+                else:
+                    return [g for g in self.genes if g['strand'] == strand and g['chr'] in chrs and g['biotype'] in biotypes]
 
     def get_tscripts(self):
+        #TODO doesn't look like this method had been finished
         '''
         Chr, Start, End, Id, Strand, Name, Biotype
         '''
@@ -179,9 +237,9 @@ class GenesObj(ParseGTF):
         tscripts = []
 
         for gene_obj in self.genes:
-            gene_id = gene_obj[3]
-            gene_name = gene_obj[5]
-            obj = self.models_dict[gene_id]
+            gid = gene_obj['chr']
+            gname = gene_obj['name']
+            obj = self.models_dict[gid]
             tdict = obj['tscripts']
             
             for k, v in tdict.items():
@@ -199,15 +257,15 @@ class GenesObj(ParseGTF):
 
         #for gene, attr in self.models_dict.items():
         for gene_obj in self.genes:
-            gene_id = gene_obj[3]
-            gene_name = gene_obj[5]
-            obj = self.models_dict[gene_id]
+            gid = gene_obj['chr']
+            gname = gene_obj['name']
+            obj = self.models_dict[gid]
             edict = obj['exons']
             strand = obj['strand']
             chr = obj['chr']
 
             for k, v in edict.items():
-                self.exons.append([chr, v['start'], v['end'], k, strand, gene_name, 'NA'])
+                self.exons.append([chr, v['start'], v['end'], k, strand, gname, 'NA'])
         return self.exons
 
     def get_introns(self, biotype = 'protein_coding'):
@@ -238,8 +296,8 @@ class GenesObj(ParseGTF):
         counter = 0
   
         for gene_obj in self.genes:
-            gid = gene_obj[3]
-            gname = gene_obj[5]
+            gid = gene_obj['chr']
+            gname = gene_obj['name']
             strand = gene_obj[4]
             chr = gene_obj[0]
             obj = self.models_dict[gid]
@@ -297,8 +355,8 @@ class GenesObj(ParseGTF):
             tsls = [tsl] 
         
         for gene_obj in self.genes:
-            gid = gene_obj[3]
-            gname = gene_obj[5]
+            gid = gene_obj['chr']
+            gname = gene_obj['name']
             strand = gene_obj[4]
             chr = gene_obj[0]
             obj = self.models_dict[gid]
