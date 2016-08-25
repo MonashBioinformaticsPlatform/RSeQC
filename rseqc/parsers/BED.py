@@ -464,7 +464,7 @@ class ParseBED(object):
                         if end > cdsEnd:
                             utr_st = max(st, cdsEnd)
                             utr_end = end
-                            ret_lst.append([chrom,utr_st,utr_end,geneName,'0',strand])
+                            ret_lst.append([chrom, utr_st, utr_end, geneName, '0',strand])
         self.file_handler.seek(0)
         return ret_lst
             
@@ -532,6 +532,7 @@ class ParseBED(object):
     def getCDSExon(self):
         
         '''Extract CDS exon regions from input bed file (must be 12-column).'''     
+
         ret_lst=[]
         for f in self.file_handler:
             f = f.strip().split()
@@ -549,12 +550,15 @@ class ParseBED(object):
             cds_seq = ''
             genome_seq_index = []
             for base,offset in zip( blockStarts, blockSizes ):
-                if (base + offset) < cdsStart: continue
-                if base > cdsEnd: continue
+                if (base + offset) < cdsStart:
+                    continue
+                if base > cdsEnd:
+                    continue
                 exon_start = max( base, cdsStart )
                 exon_end = min( base+offset, cdsEnd ) 
                 #cds_exons.append( (exon_start, exon_end) )
-                ret_lst.append([chrom,exon_start,exon_end]) 
+                ret_lst.append([chrom, exon_start, exon_end]) 
+
         self.file_handler.seek(0)
         return ret_lst
 
@@ -670,13 +674,13 @@ class ParseBED(object):
                     for st,end in zip(intron_start,intron_end):
                         #FO.write(chrom + "\t" + str(st) + "\t" + str(end) + "\t" + geneName + "_intron_" + str(intronNum) + "\t0\t" + strand + '\n')
                         #intronNum -= 1
-                        ret_lst.append([chrom,st,end])
+                        ret_lst.append([chrom, st, end])
                 else:
                     intronNum=1
-                    for st,end in zip(intron_start,intron_end):
+                    for st, end in zip(intron_start,intron_end):
                         #FO.write(chrom + "\t" + str(st) + "\t" + str(end) + "\t" + geneName + "_intron_" + str(intronNum) + "\t0\t" + strand + '\n')
                         #intronNum += 1
-                        ret_lst.append([chrom,st,end])
+                        ret_lst.append([chrom, st, end])
             except:
                 print >>sys.stderr,"[NOTE:input bed must be 12-column] skipped this line: " + line,
                 continue
@@ -750,7 +754,7 @@ class ParseBED(object):
                     else:
                         region_st = tx_end
                         region_end = tx_end+size
-                    ret_lst.append([chrom,region_st,region_end])
+                    ret_lst.append([chrom, region_st, region_end])
 
         self.file_handler.seek(0)
 
@@ -2561,11 +2565,15 @@ def subtractBed3(lst1,lst2):
         end=0
         while 1:
             start = bits1.next_set( end )
-            if start == bits1.size: break
+            if start == bits1.size:
+                break
             end = bits1.next_clear( start )
-            ret_lst.append([chrom,start,end])
+
+            ret_lst.append([chrom, start, end])
+
     bitsets1 = dict()
     bitsets2 = dict()
+
     return ret_lst
 
 def tillingBed(chrName,chrSize,stepSize=10000):
