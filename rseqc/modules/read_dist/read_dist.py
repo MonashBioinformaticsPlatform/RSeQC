@@ -44,10 +44,10 @@ def cal_size(list):
 		size += l[2] - l[1]
 	return size
 
-def foundone(chrom,ranges, st, end):
+def foundone(chrom,ranges, start, end):
 	found = 0
 	if chrom in ranges:
-		found = len(ranges[chrom].find(st,end))
+		found = len(ranges[chrom].find(start,end))
 	return found
 
 def build_bitsets(list):
@@ -55,11 +55,11 @@ def build_bitsets(list):
 	ranges={}
 	for l in list:
 		chrom =l[0].upper()
-		st = int(l[1])
+		start = int(l[1])
 		end = int(l[2])
 		if chrom not in ranges:
 			ranges[chrom] = Intersecter()
-		ranges[chrom].add_interval( Interval( st, end ) )
+		ranges[chrom].add_interval( Interval( start, end ) )
 	return ranges
 
 def process_gene_model(gene_model):
@@ -67,21 +67,23 @@ def process_gene_model(gene_model):
         # get gene_models into BED object
 	obj = BED.ParseBED(gene_model)
         # get certain aspects from that object
+        # getUTR method retuns list of lists where nested list has 6 elements per gene
 	utr_3 = obj.getUTR(utr = 3)
 	utr_5 = obj.getUTR(utr = 5)
 	cds_exon = obj.getCDSExon()
+        # getIntron method returns list of lists where nested list has 3 elements
 	intron = obj.getIntron()
-	
+        # I think the unionBed3 tries to collaps all overlapping regions... 
 	intron = BED.unionBed3(intron)
 	cds_exon=BED.unionBed3(cds_exon)
 	utr_5 = BED.unionBed3(utr_5)
 	utr_3 = BED.unionBed3(utr_3)
 	
-	utr_5 = BED.subtractBed3(utr_5,cds_exon)
-	utr_3 = BED.subtractBed3(utr_3,cds_exon)
-	intron = BED.subtractBed3(intron,cds_exon)
-	intron = BED.subtractBed3(intron,utr_5)
-	intron = BED.subtractBed3(intron,utr_3)
+	utr_5 = BED.subtractBed3(utr_5, cds_exon)
+	utr_3 = BED.subtractBed3(utr_3, cds_exon)
+	intron = BED.subtractBed3(intron, cds_exon)
+	intron = BED.subtractBed3(intron, utr_5)
+	intron = BED.subtractBed3(intron, utr_3)
 	
 	intergenic_up_1kb = obj.getIntergenic(direction="up",size=1000)
 	intergenic_down_1kb = obj.getIntergenic(direction="down",size=1000)
@@ -133,6 +135,7 @@ def process_gene_model(gene_model):
 	utr_5_ranges = build_bitsets(utr_5)
 	utr_3_ranges = build_bitsets(utr_3)
 	intron_ranges = build_bitsets(intron)
+
 	interg_ranges_up_1kb_ranges = build_bitsets(intergenic_up_1kb)
 	interg_ranges_up_5kb_ranges = build_bitsets(intergenic_up_5kb)
 	interg_ranges_up_10kb_ranges = build_bitsets(intergenic_up_10kb)
@@ -152,12 +155,28 @@ def process_gene_model(gene_model):
 	int_down10k_size = cal_size(intergenic_down_10kb)
 	
 	print >>sys.stderr, "Done"
-	return (cds_exon_ranges,intron_ranges,utr_5_ranges,utr_3_ranges,\
-			interg_ranges_up_1kb_ranges,interg_ranges_up_5kb_ranges,interg_ranges_up_10kb_ranges,\
-			interg_ranges_down_1kb_ranges,interg_ranges_down_5kb_ranges,interg_ranges_down_10kb_ranges,\
-			exon_size,intron_size,utr5_size,utr3_size,\
-			int_up1k_size,int_up5k_size,int_up10k_size,\
-			int_down1k_size,int_down5k_size,int_down10k_size)
+
+	return (cds_exon_ranges,
+                utr_5_ranges,
+                utr_3_ranges,
+                intron_ranges,
+		interg_ranges_up_1kb_ranges,
+                interg_ranges_up_5kb_ranges,
+                interg_ranges_up_10kb_ranges,
+		interg_ranges_down_1kb_ranges,
+                interg_ranges_down_5kb_ranges,
+                interg_ranges_down_10kb_ranges,
+		exon_size,
+                intron_size,
+                utr5_size,
+                utr3_size,
+		int_up1k_size,
+                int_up5k_size,
+                int_up10k_size,
+		int_down1k_size,
+                int_down5k_size,
+                int_down10k_size
+                )
 	
 def main(input_file, gene_models):
 
@@ -169,13 +188,27 @@ def main(input_file, gene_models):
 	#	print >>sys.stderr, '\n\n' + input_file + " does NOT exists" + '\n'
 	#	sys.exit(0)		
 
-	#build bitset
-	(cds_exon_r, intron_r, utr_5_r, utr_3_r,\
-	intergenic_up_1kb_r,intergenic_up_5kb_r,intergenic_up_10kb_r,\
-	intergenic_down_1kb_r,intergenic_down_5kb_r,intergenic_down_10kb_r,\
-	cds_exon_base,intron_base,utr_5_base,utr_3_base,\
-	intergenic_up1kb_base,intergenic_up5kb_base,intergenic_up10kb_base,\
-	intergenic_down1kb_base,intergenic_down5kb_base,intergenic_down10kb_base) = process_gene_model(gene_models)
+	# build bitset
+	(cds_exon_r,
+         intron_r,
+         utr_5_r,
+         utr_3_r,
+	 intergenic_up_1kb_r,
+         intergenic_up_5kb_r,
+         intergenic_up_10kb_r,
+	 intergenic_down_1kb_r,
+         intergenic_down_5kb_r,
+         intergenic_down_10kb_r,
+	 cds_exon_base,
+         intron_base,
+         utr_5_base,
+         utr_3_base,
+	 intergenic_up1kb_base,
+         intergenic_up5kb_base,
+         intergenic_up10kb_base,
+	 intergenic_down1kb_base,
+         intergenic_down5kb_base,
+         intergenic_down10kb_base) = process_gene_model(gene_models)
 	
 	intron_read=0
 	cds_exon_read=0
@@ -192,6 +225,7 @@ def main(input_file, gene_models):
 	totalReads=0
 	totalFrags=0
 	unAssignFrags=0
+
 	obj = SAM.ParseBAM(input_file)
 	
 	R_qc_fail=0
@@ -217,7 +251,7 @@ def main(input_file, gene_models):
 				continue		
 			totalReads +=1
 			chrom = obj.samfile.getrname(aligned_read.tid)
-			chrom=chrom.upper()
+			chrom = chrom.upper()
 			exons = bam_cigar.fetch_exon(chrom, aligned_read.pos, aligned_read.cigar)
 			totalFrags += len(exons)
 			
