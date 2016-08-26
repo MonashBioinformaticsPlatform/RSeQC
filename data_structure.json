@@ -13,8 +13,13 @@
                   ExonId: {start: value, end: value}
                  },
 
+          CDS: {cdsId: {start: value, end: value},
+                cdsId: {start: value, end: value},
+                cdsId: {start: value, end: value}
+                },
+
           Transcripts: {TranscriptId_1: {ExonIds: [exon_1, exon_3, exon_4],
-                                         CDS: {start: value, end: value},
+                                         cdsIds: [cds_1, cds_2, cds_5],
                                          tprime_utr: {start: value, end: value},
                                          fprime_utr: {start: value, end: value},
                                          ATG: value_1,
@@ -24,7 +29,7 @@
                                          },
 
                         TranscriptId_2: {ExonIds: [exon_2, exon_3, exon_5],
-                                         CDS: {start: value, end: value},
+                                         cdsIds: [cds_1, cds_2, cds_5],
                                          tprime_utr: {start: value, end: value},
                                          fprime_utr: {start: value, end: value},
                                          ATG: value_2,
@@ -33,7 +38,7 @@
                                          transcript_support_level: value
                                          },
                         TranscriptId_3: {ExonIds: [exon_5, exon_4, exon_6],
-                                         CDS: {start: value, end: value},
+                                         cdsIds: [cds_1, cds_2, cds_5],
                                          tprime_utr: {start: value, end: value},
                                          fprime_utr: {start: value, end: value},
                                          ATG: value_3,
