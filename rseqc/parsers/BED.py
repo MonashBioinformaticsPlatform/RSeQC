@@ -464,7 +464,7 @@ class ParseBED(object):
                         if end > cdsEnd:
                             utr_st = max(st, cdsEnd)
                             utr_end = end
-                            ret_lst.append([chrom, utr_st, utr_end, geneName, '0',strand])
+                            ret_lst.append([chrom, utr_st, utr_end, geneName, '0', strand])
         self.file_handler.seek(0)
         return ret_lst
             
@@ -647,18 +647,21 @@ class ParseBED(object):
         ret_lst=[]
         for line in self.file_handler:
             try:
-                if line.startswith('#'):continue
-                if line.startswith('track'):continue
-                if line.startswith('browser'):continue   
+                if line.startswith('#'):
+                    continue
+                if line.startswith('track'):
+                    continue
+                if line.startswith('browser'):
+                    continue   
                 # Parse fields from gene tabls
                 fields = line.split()
-                chrom     = fields[0]
-                tx_start  = int( fields[1] )
-                tx_end    = int( fields[2] )
-                geneName      = fields[3]
-                strand    = fields[5].replace(" ","_")
+                chrom = fields[0]
+                tx_start = int( fields[1] )
+                tx_end= int( fields[2] )
+                geneName = fields[3]
+                strand = fields[5].replace(" ","_")
                 cds_start = int( fields[6] )
-                cds_end   = int( fields[7] )
+                cds_end = int( fields[7] )
                 if int(fields[9] ==1):
                     continue
             
