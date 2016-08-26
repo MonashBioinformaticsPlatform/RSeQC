@@ -1444,7 +1444,6 @@ class ParseBED(object):
         self.file_handler.seek(0)
         FO.close()
     
-        
 class CompareBED:
     '''Compare two bed fies. Standard BED file has 12 fields. (http://genome.ucsc.edu/FAQ/FAQformat.html)'''
     
@@ -1457,7 +1456,6 @@ class CompareBED:
         self.B_fh=open(gene_modelsB,'r')
         self.B_full_Name=gene_modelsB
         self.B_base_Name=os.path.basename(gene_modelsB)
-
 
     def annotateEvents(self,outfile=None):
         '''Compare bed file A to bed file B (usually a bed file for reference gene model). 
@@ -2155,7 +2153,6 @@ class CompareBED:
         self.A_fh.seek(0)
         print >>sys.stderr, "Done."
 
-
     def findClosestTTS(self,outfile=None,downStream=50000,upStream=50000):
         '''For each entry in input bed file (1st bed file), find the nearest gene (2nd bed file) based
         on TTS. Genes shared the same TTS will be grouped together.
@@ -2251,7 +2248,6 @@ class CompareBED:
             
         self.A_fh.seek(0)
         print >>sys.stderr, "Done."     
-
 
     def findClosestPeak(self,mod, downStream=50000,upStream=50000):
         '''For each entry in second bed file (reference gene model) find the closest peak defined in the fist bed file'''
@@ -2353,7 +2349,6 @@ class CompareBED:
         #for k,v in nearest_peak.items():
         #   print >>FO,  str(k) + '\t' + str(v)
                         
-
     def bestMatch(self):
         '''Exon chain comparison. Given a bed entry in gene_modelsA, find the best-matched gene from gene_modelsB.
         If multiple genes from gene_modelsB matched equally good. Randomly report one.'''

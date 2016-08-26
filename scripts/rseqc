@@ -3,6 +3,7 @@
 
 import os
 import argparse
+import logging
 
 from rseqc.modules.read_dist import read_dist
 
@@ -43,26 +44,35 @@ def arg_parser(parser = None):
                                   required = True,
                                   help = 'specify your gene_models file in BED12 or GTF format'
                                   )
+    parser_read_dist.add_argument('-t', '--file_type',
+                                  default = 'gtf',
+                                  help = 'specify file type, supported fomats GTF or BED12, where each line is a transcript'
+                                  )
     
     args = parser.parse_args()
     
     return args
     
-# this is all parsed in main()
-input_file = args.input_file
 
-#TODO pass args.command into a function and let function to decide which sub-function to invoke for data processing
+def main(args):
 
-if args.command == 'bam_stats':
-    mapq = args.mapq
-if args.command == 'read_dist':
-    gene_models = args.gene_models
+    logging.basicConfig(level = logging.INFO)
+    logger = logging.getLogger(__name__)
+    logger.info(' started read distribution calculation')
 
-import sys
+    if args.command == 'read_dist':
+        input_file = args.input_file
+        gene_models = args.gene_models
+        file_type = args.file_type
 
-f = sys.argv[1]
-b = sys.argv[2]
+        get_distrib = read_dist.main(input_file, gene_models, file_type)
 
-check = read_dist.main(f,b)
-print check
+        logger.info(' finished read distribution calculation')
 
+    if args.command == 'bam_stats':
+        input_file = args.input_file
+        mapq = args.mapq
+
+if __name__ == "__main__":
+    args = arg_parser()
+    main(args)
