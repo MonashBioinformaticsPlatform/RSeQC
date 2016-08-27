@@ -9,12 +9,12 @@ The following reads will be skipped:
 '''
 
 #import built-in modules
-import os
 import sys
-import re
 import logging
 
 # it looks like these imports aren't used in this module
+#import logging
+#import os
 #import string
 #import warnings
 #import collections

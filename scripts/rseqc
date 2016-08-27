@@ -5,7 +5,8 @@ import os
 import argparse
 import logging
 
-from rseqc.modules.read_dist import read_dist
+#from rseqc.modules.read_dist import read_dist
+from rseqc.modules import read_dist
 
 def arg_parser(parser = None):
     '''
