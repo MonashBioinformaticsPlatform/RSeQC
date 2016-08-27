@@ -5,8 +5,8 @@ import os
 import argparse
 import logging
 
-#from rseqc.modules.read_dist import read_dist
 from rseqc.modules import read_dist
+from rseqc.modules import bam_stats
 
 def arg_parser(parser = None):
     '''
@@ -73,6 +73,7 @@ def main(args):
     if args.command == 'bam_stats':
         input_file = args.input_file
         mapq = args.mapq
+        stats = bam_stats.main(input_file, mapq)
 
 if __name__ == "__main__":
     args = arg_parser()

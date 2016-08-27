@@ -2322,7 +2322,7 @@ class ParseBAM(object):
 				sys.exit(1)
 			self.bam_format = False
 
-	def stat (self,q_cut=30):
+	def stat (self, q_cut=30):
 		'''Calculate mapping statistics'''
 		R_total=0
 		R_qc_fail=0
@@ -3021,7 +3021,6 @@ class ParseBAM(object):
 		
 		RS.close()
 		#self.f.seek(0)
-
 	def readsQual_boxplot(self,outfile,shrink=1000, q_cut=30):
 		'''calculate phred quality score for each base in read (5->3)'''
 
@@ -3131,7 +3130,6 @@ class ParseBAM(object):
 		#print >>RS, "lines(density(gc),col='red')"
 		print >>RS ,"dev.off()"		
 		#self.f.seek(0)
-
 	def readDupRate(self,q_cut, outfile=None,up_bound=500):
 		'''Calculate reads's duplicate rates'''
 		if outfile is None:
@@ -3209,7 +3207,6 @@ class ParseBAM(object):
 		print >>RS, 'mtext(4, text = "Reads %", line = 2)'
 		print >>RS, 'dev.off()'
 		#self.f.seek(0)
-
 	def clipping_profile(self,outfile, q_cut, PE, type="S"):
 		'''calculate profile of soft clipping or insertion'''
 		
@@ -3722,7 +3719,6 @@ class ParseBAM(object):
 		FQ.close()
 		RS.close()
 		#self.f.seek(0)
-
 	def annotate_junction(self,refgene,outfile,min_intron=50, q_cut=30):
 		'''Annotate splicing junctions in BAM or SAM file. Note that a (long) read might have multiple splicing
 		events  (splice multiple times), and the same splicing events can be consolidated into a single
@@ -3856,8 +3852,6 @@ class ParseBAM(object):
 		print >>ROUT, "dev.off()"
 		#print >>ROUT, "mat=matrix(c(events,junction),byrow=T,ncol=3)"
 		#print >>ROUT, 'barplot(mat,beside=T,ylim=c(0,100),names=c("known","partial\nnovel","complete\nnovel"),legend.text=c("splicing events","splicing junction"),ylab="Percent")'
-
-
 	def junction_freq(self, chrom, st, end, known_junctions, q_cut=30):
 		'''
 		return number of splicing reads for each known junction
@@ -3893,8 +3887,6 @@ class ParseBAM(object):
 				junc_freq[k] = 0
 			elif junc_freq[k] < 2: junc_freq[k] = 0
 		return junc_freq
-
-
 	def saturation_junction(self,refgene,outfile=None,sample_start=5,sample_step=5,sample_end=100,min_intron=50,recur=1, q_cut=30):
 		'''check if an RNA-seq experiment is saturated in terms of detecting known splicing junction'''
 		
@@ -4027,7 +4019,6 @@ class ParseBAM(object):
 		print >>OUT, "points(x,w/1000,type='o',col='green')"
 		print >>OUT, 'legend(5,%d, legend=c("All junctions","known junctions", "novel junctions"),col=c("blue","red","green"),lwd=1,pch=1)' % int(int(all_junc[-1])/1000)
 		print >>OUT, "dev.off()"
-
 	def saturation_RPKM(self,refbed,outfile,sample_start=5,sample_step=5,sample_end=100,skip_multi=True, strand_rule=None, q_cut=30):
 		'''for each gene, check if its RPKM (epxresion level) has already been saturated or not'''
 		
@@ -4201,8 +4192,6 @@ class ParseBAM(object):
 			print >>RPKM_OUT, '\t'.join(RPKM_table[key])
 			print >>RAW_OUT, key + '\t',
 			print >>RAW_OUT, '\t'.join(rawCount_table[key])		
-
-
 	def shuffle_RPKM(self,refbed,outfile,sample_percentage=0.5,shuffle_times=50,skip_multi=True, strand_rule=None):
 		'''for each gene, check if its RPKM (epxresion level) has already been saturated or not'''
 		
@@ -4369,7 +4358,6 @@ class ParseBAM(object):
 			print >>RPKM_OUT, '\t'.join(RPKM_table[key])
 			print >>RAW_OUT, key + '\t',
 			print >>RAW_OUT, '\t'.join(rawCount_table[key])		
-		
 	def fetchAlignments(self,chr,st,end):
 		'''fetch alignment from sorted BAM file based on chr, st, end
 		Note: BAM file must be indexed'''
@@ -4378,7 +4366,6 @@ class ParseBAM(object):
 			return a
 		except:
 			return None
-
 	def mismatchProfile(self,read_length,read_num, outfile, q_cut=30):
 		'''
 		Calculate mismatch profile. Note that the "MD" tag must exist.
@@ -4516,8 +4503,6 @@ class ParseBAM(object):
 			count += 1
 		print >>ROUT, "legend(13,y_up_bound,legend=c(%s), fill=color_code, border=color_code, ncol=4)" % (','.join(['"' + i + '"' for i in all_genotypes]))
 		print >>ROUT, "dev.off()"
-			
-			
 	def deletionProfile(self,read_length,read_num, outfile, q_cut=30):
 		'''
 		Calculate deletion profile. 
@@ -4597,7 +4582,6 @@ class ParseBAM(object):
 		print >>ROUT, "value=c(%s)" % ','.join([i for i in del_count])		
 		print >>ROUT, "plot(pos,value,type='b', col='blue',xlab=\"Read position (5\'->3\')\", ylab='Deletion count')"					
 		print >>ROUT, "dev.off()"
-
 
 def print_bits_as_bed( bits ):
 	end = 0
