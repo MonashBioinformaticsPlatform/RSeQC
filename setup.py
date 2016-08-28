@@ -3,6 +3,7 @@
 
 import os
 from setuptools import setup
+from setuptools import find_packages
 
 setup(
     name = "RSeQC",
@@ -15,12 +16,10 @@ setup(
     url = "https://github.com/MonashBioinformaticsPlatform/RSeQC",
     scripts = ['scripts/rseqc'],
     install_requires = [
-        'cython',
-        'numpy',
         'pysam',
         'bx-python'
         ], 
-    packages=['rseqc'],
+    packages=find_packages(),
     zip_safe=False
     )
 
