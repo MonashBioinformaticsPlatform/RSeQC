@@ -16,6 +16,8 @@
 - [Quick start](#quick-start)
 - [Installation](#installation)
 - [Input formats](#input-format)
+- [Contact](#contact)
+- [Reference](#reference)
 
 ## Quick start
 
@@ -55,19 +57,6 @@ pip install numpy
 - [BED](http://genome.ucsc.edu/FAQ/FAQformat.html) file is tab separated, 12-column, plain text file to represent gene models
 - [GTF](http://mblab.wustl.edu/GTF22.html) file is also represents gene models. This is an alternative file to BED12
 - [SAM/BAM](http://www.htslib.org/doc/sam.html) file holds information about read alignment to the reference genome. 
-
-## Fetch chromosome size file from UCSC
-
-[download this script](http://sourceforge.net/projects/rseqc/files/other/fetchChromSizes/download)
-and save as 'fetchChromSizes'
- 
-Make sure it's executable
-
-```BASH
-chmod +x fetchChromSizes
-fetchChromSizes hg19 > hg19.chrom.sizes
-fetchChromSizes danRer7  > zebrafish.chrom.sizes
-```
 
 ## Contact
 
