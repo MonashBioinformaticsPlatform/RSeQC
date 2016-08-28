@@ -33,52 +33,41 @@ OR
 rseqc read_dist --input_file yourBamFile.bam --gene_models yourBED12file.bed --file_type bed
 ```
 
+## Installation
+ 
+You will need either `sudo` or [virtualenvs](ttp://docs.python-guide.org/en/latest/dev/virtualenvs/) (which is my preferred method). If you are you going to use `sudo` please prefix `python setup.py install` and `pip install numpy` with `sudo`.
 
-Install RSeQC from source code (Not recommended)
-----------------------------------------------------
- 
-Prerequisite: gcc; `python2.7 <http://www.python.org/getit/releases/2.7/>`_;  `numpy <http://numpy.scipy.org/>`_; `R <http://www.r-project.org/>`_
- 
-Install RSeQC (Example)::
- 
- tar zxf RSeQC-VERSION.tar.gz
-  
- cd RSeQC-VERSION
- 
- #type 'python setup.py install --help' to see options
- python setup.py install	#Note this requires root privilege
- or
- python setup.py install --root=/home/user/XXX/		#install RSeQC to user specificed location, does NOT require root privilege
- 
- #This is only an example. Change path according to your system configuration
- export PYTHONPATH=/home/user/lib/python2.7/site-packages:$PYTHONPATH 
- 
- #This is only an example. Change path according to your system configuration
- export PATH=/home/user/bin:$PATH
+```BASH
+git clone --branch fresh https://github.com/MonashBioinformaticsPlatform/RSeQC.git
+cd RSeQC
+python setup.py install
+rseqc --help
+```
 
-Finally, type: python -c 'from qcmodule import SAM'. If no error message comes out, RSeQC
-modules have been installed successfully. 
+I haven't figured why, but `numpy` needs to be installed separately. It doesn't get pulled correctly from the dependencies list in `setup.up`.
+
+```BASH
+pip install numpy
+```
 
 ## Input format
 
-RSeQC accepts 4 file formats as input:
+- [BED](http://genome.ucsc.edu/FAQ/FAQformat.html) file is tab separated, 12-column, plain text file to represent gene models
+- [GTF](http://mblab.wustl.edu/GTF22.html) file is also represents gene models. This is an alternative file to BED12
+- [SAM/BAM](http://www.htslib.org/doc/sam.html) file holds information about read alignment to the reference genome. 
 
-- `BED <http://genome.ucsc.edu/FAQ/FAQformat.html#format1>`_ file is tab separated, 12-column, plain text file to represent gene model. Here is an `example <http://dldcc-web.brc.bcm.edu/lilab/liguow/RSeQC/dat/sample.bed>`_.
-- `SAM <http://samtools.sourceforge.net/>`_ or `BAM <http://genome.ucsc.edu/goldenPath/help/bam.html>`_ files are used to store reads alignments. SAM file is human readable plain text file, while BAM is  binary version of SAM, a compact and index-able representation of reads alignments. Here is an `example <http://dldcc-web.brc.bcm.edu/lilab/liguow/RSeQC/dat/sample.sam>`_.
-- Chromosome size file is a two-column, plain text file. Here is an `example <http://dldcc-web.brc.bcm.edu/lilab/liguow/RSeQC/dat/sample.hg19.chrom.sizes>`_ for human hg19 assembly. Use this `script <http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/fetchChromSizes>`_ to download chromosome size files of other genomes.
-- `Fasta <http://en.wikipedia.org/wiki/FASTA_format>`_ file.
+## Fetch chromosome size file from UCSC
 
-## Fetch chromsome size file from UCSC
+[download this script](http://sourceforge.net/projects/rseqc/files/other/fetchChromSizes/download)
+and save as 'fetchChromSizes'
+ 
+Make sure it's executable
 
-download this `script <http://sourceforge.net/projects/rseqc/files/other/fetchChromSizes/download>`_
-and save as 'fetchChromSizes'::
- 
- # Make sure it's executable 
- chmod +x fetchChromSizes
- 
- fetchChromSizes hg19 >hg19.chrom.sizes
- 
- fetchChromSizes danRer7  >zebrafish.chrom.sizes
+```BASH
+chmod +x fetchChromSizes
+fetchChromSizes hg19 > hg19.chrom.sizes
+fetchChromSizes danRer7  > zebrafish.chrom.sizes
+```
 
 ## Contact
 
