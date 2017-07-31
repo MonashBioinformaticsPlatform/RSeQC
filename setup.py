@@ -1,26 +1,20 @@
-#!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
-
-import os
-from setuptools import setup
-from setuptools import find_packages
+from setuptools import setup, find_packages
 
 setup(
     name = "RSeQC",
     version = "2.6.4",
-    author = "Liguo Wang",
-    author_email ="wangliguo78@gmail.com",
-    description = "RNA-seq QC Package",
-    license = "GPLv2",
-    keywords = 'RNA-seq, RNAseq, QC, metrics',
     url = "https://github.com/MonashBioinformaticsPlatform/RSeQC",
-    scripts = ['scripts/rseqc'],
-    install_requires = [
-        'pysam',
-        'bx-python'
-        ], 
-    packages=find_packages(),
+    license = "GPLv2",
+    author = "kizza_a",
+    author_email ="kirill.tsyganov@monash.edu",
+    description = "RNAseq QCs suite",
+    packages=find_packages(exclude=['test']),
     zip_safe=False
+    keywords = 'RNA-seq, RNAseq, QC, metrics',
+    scripts = ['scripts/rseqc'],
+    install_requires = ['pysam',
+                        'bx-python'
+                        ], 
     )
 
 #setup_requires=['numpy'],
