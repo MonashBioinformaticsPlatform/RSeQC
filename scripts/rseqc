@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+#!/usr/bin/env python3
 
 import os
 import argparse
@@ -37,8 +36,9 @@ def arg_parser(parser = None):
     parser_read_dist = subparsers.add_parser('read_dist',
                                              help = 'Get read distribution amongst gene feature, e.g exon, intron etc.'
                                              )
-    parser_read_dist.add_argument('-i', '--input_file',
+    parser_read_dist.add_argument('-i', '--input_files',
                                   required = True,
+                                  nargs = '+',
                                   help = 'specify your alignment file in SAM or BAM format'
                                   )
     parser_read_dist.add_argument('-g', '--gene_models',
@@ -62,11 +62,11 @@ def main(args):
     logger.info(' started read distribution calculation')
 
     if args.command == 'read_dist':
-        input_file = args.input_file
+        input_files = args.input_files
         gene_models = args.gene_models
         file_type = args.file_type
 
-        get_distrib = read_dist.main(input_file, gene_models, file_type)
+        get_distrib = read_dist.main(input_files, gene_models, file_type)
 
         logger.info(' finished read distribution calculation')
 

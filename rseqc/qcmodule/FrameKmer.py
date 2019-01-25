@@ -11,7 +11,7 @@ import itertools
 
 def word_generator(seq,word_size,step_size,frame=0):
 	'''generate DNA word from sequence using word_size and step_size. Frame is 0, 1 or2'''
-	for i in xrange(frame,len(seq),step_size):
+	for i in range(frame,len(seq),step_size):
 		word =  seq[i:i+word_size]
 		if len(word) == word_size:
 			yield word
@@ -51,7 +51,7 @@ def kmer_freq_file (fastafile,word_size,step_size=1,frame=0,min_count=0):
 	
 	#return count_table
 	for kmer in all_possible_kmer(word_size):
-		if not count_table.has_key(kmer): count_table[kmer]=0
+		if kmer not in count_table: count_table[kmer]=0
 		if count_table[kmer] >= min_count:
 			#print kmer + '\t' + str(count_table[kmer])
 			if 'N' in kmer:continue
@@ -64,9 +64,9 @@ def kmer_freq_seq (seq,word_size,step_size=1,frame=0,min_count=0):
 	'''
 	count_table = Counter(word_generator(seq,word_size=word_size,step_size=step_size,frame=frame))
 	for kmer in all_possible_kmer(word_size):
-		if not count_table.has_key(kmer): count_table[kmer]=0
+		if kmer not in count_table: count_table[kmer]=0
 		if count_table[kmer] >= min_count:
-			print kmer + '\t' + str(count_table[kmer])
+			print((kmer + '\t' + str(count_table[kmer])))
 
 def kmer_ratio(seq,word_size,step_size,coding,noncoding):
 	if len(seq) < word_size:
@@ -79,7 +79,7 @@ def kmer_ratio(seq,word_size,step_size,coding,noncoding):
 	frame1_count=0.0
 	frame2_count=0.0
 	for k in word_generator(seq=seq, word_size = word_size, step_size=step_size,frame=0):	
-		if (not coding.has_key(k)) or (not noncoding.has_key(k)):
+		if (k not in coding) or (k not in noncoding):
 			continue
 		if coding[k]>0 and noncoding[k] >0:
 			sum_of_log_ratio_0  +=  math.log( coding[k] / noncoding[k])

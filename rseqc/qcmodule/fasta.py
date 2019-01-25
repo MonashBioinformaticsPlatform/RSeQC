@@ -5,7 +5,7 @@
 import numpy
 import re
 import sys
-from string import maketrans
+import string
 from optparse import OptionParser
 import collections
 from rseqc.qcmodule import FrameKmer
@@ -35,7 +35,7 @@ class Fasta:
 		'''initialize object, lowercase in sequence is automatically converted into uppercase'''
 		self.seqs={}
 		self.IDs=[]
-		self.transtab = maketrans("ACGTNX","TGCANX")
+		self.transtab = string.maketrans("ACGTNX","TGCANX")
 		self.filename = fastafile
 		tmpseq=''
 		if fastafile is not None:
@@ -47,15 +47,15 @@ class Fasta:
 					name=line[1:]
 					tmpseq =''
 					self.IDs.append(name)
-					print >>sys.stderr,"\tloading "+name+' ...'
+					print("\tloading "+name+' ...', file=sys.stderr)
 				else:
 					tmpseq += line.upper()
 			self.seqs[name]=tmpseq
 				
 	def addSeq(self,id,seq):
 		'''add sequence to current data'''
-		if self.seqs.has_key(id):
-			print >>sys.stderr,id +" already exists!"
+		if id in self.seqs:
+			print(id +" already exists!", file=sys.stderr)
 			return
 		else:
 			self.seqs[id]=seq.upper()
@@ -68,52 +68,52 @@ class Fasta:
 	def getSeq(self,seqID=None):
 		'''return sequence for sepcified seqID, otherwise all sequences are returned'''
 		if seqID is None:
-			return self.seqs.values()
+			return list(self.seqs.values())
 		else:
 			return self.seqs[seqID]
 
 	def printSeqs(self,n=50):
 		'''print all seqs '''
-		for k,v in self.seqs.items():
-			print '>' + k
-			for i in xrange(0, len(v), n):
-				print v[i:i+n]
+		for k,v in list(self.seqs.items()):
+			print('>' + k)
+			for i in range(0, len(v), n):
+				print(v[i:i+n])
 
 			
 	def getSeqLen(self,seqID=None):
 		seqlen=collections.defaultdict(dict)
 		if seqID is None:
-			for (k,v) in self.seqs.items():
+			for (k,v) in list(self.seqs.items()):
 				seqlen[k]=len(v)
 		else:
 			try:
 				seqlen[seqID]=len(self.seqs[seqID])
 			except:
-				print >>sys.stderr,"Not found"
+				print("Not found", file=sys.stderr)
 		return seqlen
 			
 	def countBase(self,pattern=None):
 		'''count occurence of substring (defined by pattern), otherwise count A,C,G,T,N,X
 		NOTE: pattern is counted non-overlappingly'''
 		if pattern is None:
-			print "ID\tTotal\tA\tC\tG\tT\tN\tX"
-			for (k,v) in self.seqs.items():
-				print k+"\t",
-				print len(v),"\t",
-				print str(v.count('A'))+"\t",
-				print str(v.count('C'))+"\t",
-				print str(v.count('G'))+"\t",
-				print str(v.count('T'))+"\t",
-				print str(v.count('N'))+"\t",
-				print v.count('X')
+			print("ID\tTotal\tA\tC\tG\tT\tN\tX")
+			for (k,v) in list(self.seqs.items()):
+				print(k+"\t", end=' ')
+				print(len(v),"\t", end=' ')
+				print(str(v.count('A'))+"\t", end=' ')
+				print(str(v.count('C'))+"\t", end=' ')
+				print(str(v.count('G'))+"\t", end=' ')
+				print(str(v.count('T'))+"\t", end=' ')
+				print(str(v.count('N'))+"\t", end=' ')
+				print(v.count('X'))
 		else:
-			for (k,v) in self.seqs.items():
-				print k+"\t",
-				print str(len(v))+"\t",
-				print v.count(pattern)
+			for (k,v) in list(self.seqs.items()):
+				print(k+"\t", end=' ')
+				print(str(len(v))+"\t", end=' ')
+				print(v.count(pattern))
 	def cal_entropy(self,l=3):
 		'''calculate entropy for each sequence'''
-		for (id,seq) in self.seqs.items():
+		for (id,seq) in list(self.seqs.items()):
 			entropy = 0
 			dna_chars_uniq = FrameKmer.all_possible_kmer(l)
 			dna_len = len(seq)
@@ -132,8 +132,8 @@ class Fasta:
 		'''return reverse-complemented sequence for sepcified seqID, otherwise all sequences are 
 		reverse-complemented'''
 		if seqID is None:
-			for (k,v) in self.seqs.items():
-				print ">" + k + "_rev"
+			for (k,v) in list(self.seqs.items()):
+				print(">" + k + "_rev")
 				tmp = v.translate(self.transtab)
 				return tmp[::-1]			
 		else:
@@ -146,15 +146,15 @@ class Fasta:
 
 		seq2Name={}
 		seq2Count={}
-		for (key,value) in self.seqs.items():
+		for (key,value) in list(self.seqs.items()):
 			seq2Name[value]=key
-			if seq2Count.has_key(value):
+			if value in seq2Count:
 				seq2Count[value]+=1
 			else:
 				seq2Count[value]=1
-		for value in seq2Name.keys():
-				print '>'+ str(seq2Name[value]) + '_' + str(seq2Count[value])
-				print value
+		for value in list(seq2Name.keys()):
+				print('>'+ str(seq2Name[value]) + '_' + str(seq2Count[value]))
+				print(value)
 
 
 	def findPattern(self,pat,outfile,seqID=None,rev=True):
@@ -168,13 +168,13 @@ class Fasta:
 		
 		
 		if seqID is None:
-			for (k,v) in self.seqs.items():
+			for (k,v) in list(self.seqs.items()):
 				loopSwitch=0
 				start=0
 				while loopSwitch !=-1:
 					loopSwitch = v.find(Pat,start)
 					if loopSwitch !=-1:
-						print >>fout,k + "\t" + str(loopSwitch) + "\t" + str(loopSwitch + length) + "\t" + Pat + "\t0\t+" 
+						print(k + "\t" + str(loopSwitch) + "\t" + str(loopSwitch + length) + "\t" + Pat + "\t0\t+", file=fout) 
 						start = loopSwitch +1
 					
 		else:
@@ -182,19 +182,19 @@ class Fasta:
 			start=0
 			while loopSwitch !=-1:
 				loopSwitch = self.seqs[seqID].find(Pat,start)
-				print >>fout, seqID + "\t" + str(loopSwitch) + "\t" + str(loopSwitch + length) + "\t" + Pat + "\t0\t+" 
+				print(seqID + "\t" + str(loopSwitch) + "\t" + str(loopSwitch + length) + "\t" + Pat + "\t0\t+", file=fout) 
 				start = loopSwitch +1
 
 		if rev==True:
 			Pat_rev=Pat.translate(self.transtab)[::-1]
 			if seqID is None:
-				for (k,v) in self.seqs.items():
+				for (k,v) in list(self.seqs.items()):
 					loopSwitch=0
 					start=0
 					while loopSwitch !=-1:
 						loopSwitch = v.find(Pat_rev,start)
 						if loopSwitch !=-1:
-							print >>fout,k + "\t" + str(loopSwitch) + "\t" + str(loopSwitch + length) + "\t" + Pat + "\t0\t-" 
+							print(k + "\t" + str(loopSwitch) + "\t" + str(loopSwitch + length) + "\t" + Pat + "\t0\t-", file=fout) 
 							start = loopSwitch +1
 						
 			else:
@@ -202,7 +202,7 @@ class Fasta:
 				start=0
 				while loopSwitch !=-1:
 					loopSwitch = self.seqs[seqID].find(Pat_rev,start)
-					print >>fout, seqID + "\t" + str(loopSwitch) + "\t" + str(loopSwitch + length) + "\t" + Pat + "\t0\t-" 
+					print(seqID + "\t" + str(loopSwitch) + "\t" + str(loopSwitch + length) + "\t" + Pat + "\t0\t-", file=fout) 
 					start = loopSwitch +1		
 
 	def fetchSeq(self,chr=None,st=None,end=None,infile=None,outfile=None):
@@ -215,20 +215,20 @@ class Fasta:
 			for line in open(infile):
 				fields=line.strip().split()
 				if (len(fields)==3):
-					print >>fout,fields[0]+":"+fields[1]+"-"+fields[2]+"\t"+"strand=+"
-					print >>fout,self.seqs[fields[0]][int(fields[1]):int(fields[2])].upper()
+					print(fields[0]+":"+fields[1]+"-"+fields[2]+"\t"+"strand=+", file=fout)
+					print(self.seqs[fields[0]][int(fields[1]):int(fields[2])].upper(), file=fout)
 				elif (len(fields)>3):
 					if fields[5]=='-':
-						print >>fout,fields[0]+":"+fields[1]+"-"+fields[2]+"\t"+"strand=-"
-						print >>fout,self.seqs[fields[0]][int(fields[1]):int(fields[2])].translate(self.transtab)[::-1].upper()
+						print(fields[0]+":"+fields[1]+"-"+fields[2]+"\t"+"strand=-", file=fout)
+						print(self.seqs[fields[0]][int(fields[1]):int(fields[2])].translate(self.transtab)[::-1].upper(), file=fout)
 					else:
-						print >>fout,fields[0]+":"+fields[1]+"-"+fields[2]+"\t"+"strand=+"
-						print >>fout,self.seqs[fields[0]][int(fields[1]):int(fields[2])].upper()
+						print(fields[0]+":"+fields[1]+"-"+fields[2]+"\t"+"strand=+", file=fout)
+						print(self.seqs[fields[0]][int(fields[1]):int(fields[2])].upper(), file=fout)
 		else:
 			try:
 				return self.seqs[chr][st:end].upper()
 			except:
-				print >>sys.stderr, "cannot fetch sequence from " + self.filename + " for " + chr + ":" + str(st) + "-" + str(end)
+				print("cannot fetch sequence from " + self.filename + " for " + chr + ":" + str(st) + "-" + str(end), file=sys.stderr)
 				return ''
 				#print >>sys.stderr, chr + "\t" + str(st) +'\t' + str(end) + "  Please input chr,st,end"
 						

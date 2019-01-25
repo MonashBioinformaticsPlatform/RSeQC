@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
-
 #__version__ = "0.0.2"
 
 import sys
@@ -28,8 +25,8 @@ class ParseGTF(object):
                 }
         
         for key in tags_dict:
-        	new_value = tags_dict[key]+tags_regex
-        	tags_dict[key] = new_value
+                new_value = tags_dict[key]+tags_regex
+                tags_dict[key] = new_value
 
         self.models_dict = {}
         exons_dict = {}
@@ -65,7 +62,7 @@ class ParseGTF(object):
                         chk_tsl = re.search(tags_dict['tsl'], items[8])
             
                         if chk_gid.group(1) not in self.models_dict:
-                        	self.models_dict[chk_gid.group(1)] = {}
+                                self.models_dict[chk_gid.group(1)] = {}
                         # in gtf every line must have gene_id
                         gid = chk_gid.group(1)
                         # not checking if mainInfo since if checkExonId isn't null then this is must exist
@@ -165,12 +162,12 @@ class ParseGTF(object):
                         if items[2].lower() == 'stop_codon':
                             self.models_dict[gid]['tscripts'][tid]['TGA'] = {'start': int(items[3]), 'end': int(items[4])}
 
-        for g in exons_dict.keys():
-            for t, v in exons_dict[g].items():
+        for g in list(exons_dict.keys()):
+            for t, v in list(exons_dict[g].items()):
                 self.models_dict[g]['tscripts'][t]['exons_id'] = v
 
-        for g in cds_dict.keys():
-            for t, v in cds_dict[g].items():
+        for g in list(cds_dict.keys()):
+            for t, v in list(cds_dict[g].items()):
                 self.models_dict[g]['tscripts'][t]['cds_id'] = v
 
 class GeneModels(ParseGTF):
@@ -180,13 +177,13 @@ class GeneModels(ParseGTF):
 
         self.genes = []
 
-        for gene, attr in self.models_dict.items():
+        for gene, attr in list(self.models_dict.items()):
 
             edict = attr['exons']
             strand = attr['strand']
             chr = attr['chr']
-            gstart = min([v['start'] for v in edict.values()])
-            gend = max([v['end'] for v in edict.values()])
+            gstart = min([v['start'] for v in list(edict.values())])
+            gend = max([v['end'] for v in list(edict.values())])
 
             self.genes.append({'chr': chr,
                                'start': gstart,
@@ -231,7 +228,7 @@ class GeneModels(ParseGTF):
         if chr != 'all' and ( isinstance(chr, str) or isinstance(chr, int) ):
             tmp = [chr] 
         # make sure all entries are converted to strings
-        chrs = map(str, tmp)
+        chrs = list(map(str, tmp))
 
         biotypes = biotype
         if isinstance(biotype, str):
@@ -282,7 +279,7 @@ class GeneModels(ParseGTF):
             obj = self.models_dict[gid]
             tdict = obj['tscripts']
 
-            for t, v in tdict.items():
+            for t, v in list(tdict.items()):
 
                 ttype = v['ttype']
                 pids = v['cds_id']
@@ -376,7 +373,7 @@ class GeneModels(ParseGTF):
             strand = obj['strand']
             chr = obj['chr']
 
-            for k, v in edict.items():
+            for k, v in list(edict.items()):
                 self.exons.append([chr, v['start'], v['end'], k, strand, gname, 'NA'])
         return self.exons
 
@@ -414,7 +411,7 @@ class GeneModels(ParseGTF):
             obj = self.models_dict[gid]
             tdict = obj['tscripts']
 
-            for t, v in tdict.items():
+            for t, v in list(tdict.items()):
                 ttype = v['ttype']
                 eids = v['exons_id']
 
@@ -425,7 +422,7 @@ class GeneModels(ParseGTF):
                     ends = [obj['exons'][e]['start'] for e in eids]
                     ends.sort()
 
-                    for i in xrange(len(ends)-1):
+                    for i in range(len(ends)-1):
                         introns.append({'chr': chr, 'start': ends[i], 'end': starts[i+1], 'id': prefix+str(intron_cnter), 'strand': strand, 'name': gname, 'biotype': ttype})
                         intron_cnter += 1
 
@@ -477,7 +474,7 @@ class GeneModels(ParseGTF):
             obj = self.models_dict[gid]
             tdict = obj['tscripts']
 
-            for t, v in tdict.items():
+            for t, v in list(tdict.items()):
 
                 ttype = v['ttype']
                 eids = v['exons_id']
@@ -610,7 +607,7 @@ class GeneModels(ParseGTF):
             obj = self.models_dict[gid]
             tdict = obj['tscripts']
 
-            for t, v in tdict.items():
+            for t, v in list(tdict.items()):
                 start = v['fprime_utr']['start']
                 end = v['fprime_utr']['end']
                 ttype = v['ttype']
