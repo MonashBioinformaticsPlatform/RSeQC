@@ -59,7 +59,7 @@ def main(args):
 
     logging.basicConfig(level = logging.INFO)
     logger = logging.getLogger(__name__)
-    logger.info(' started read distribution calculation')
+    logger.info(' Starting reads distribution calculation...')
 
     if args.command == 'read_dist':
         input_files = args.input_files
@@ -68,7 +68,7 @@ def main(args):
 
         get_distrib = read_dist.main(input_files, gene_models, file_type)
 
-        logger.info(' finished read distribution calculation')
+        logger.info(' Finished read distribution calculation')
 
     if args.command == 'bam_stats':
         input_file = args.input_file

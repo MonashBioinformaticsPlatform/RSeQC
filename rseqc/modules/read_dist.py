@@ -53,7 +53,7 @@ def build_bitsets(list):
 
 def process_gene_model(gene_model, file_type):
     logger = logging.getLogger(__name__)
-    logger.info(' started procecssing annotation file > %s ...' % gene_model)
+    logger.info(' Initiating annotation file > %s...' % gene_model)
 
     gene_obj = None
 
@@ -150,8 +150,6 @@ def process_gene_model(gene_model, file_type):
     int_down5k_size = cal_size(intergenic_down_5kb)
     int_down10k_size = cal_size(intergenic_down_10kb)
     
-    logger.info(' done processing annotation file')
-    
     return (cds_exon_ranges,
             utr_5_ranges,
             utr_3_ranges,
@@ -174,10 +172,10 @@ def process_gene_model(gene_model, file_type):
             int_down10k_size
             )
 
-def do_work(input_file, gene_models, file_type):
+def do_work(input_file, genes_obj):
 
     logger = logging.getLogger(__name__)
-    logger.info(" these are your input parameters: alignment file > %s | annotation file > %s | file type > %s" % (input_file, gene_models, file_type))
+    logger.info(" Processing alignment file > %s" % input_file)
 
     # build bitset
     (cds_exon_r,
@@ -199,7 +197,7 @@ def do_work(input_file, gene_models, file_type):
      intergenic_up10kb_base,
      intergenic_down1kb_base,
      intergenic_down5kb_base,
-     intergenic_down10kb_base) = process_gene_model(gene_models, file_type)
+     intergenic_down10kb_base) = genes_obj
 
     intron_read=0
     cds_exon_read=0
@@ -224,8 +222,6 @@ def do_work(input_file, gene_models, file_type):
     R_nonprimary=0
     R_unmap=0
     
-    logger.info(' started processing alignemnt file > %s ..' % input_file)
-
     try:
         while(1):
             aligned_read = next(obj.samfile)
@@ -290,7 +286,7 @@ def do_work(input_file, gene_models, file_type):
                 else:
                     unAssignFrags +=1
     except StopIteration:
-        logger.info(' done processing alignment file')
+        logger.info(" Done processing alignment file > %s" % input_file)
 
     print("%-30s%d" % ("Total Reads",totalReads))
     print("%-30s%d" % ("Total Tags",totalFrags))
@@ -314,8 +310,10 @@ def do_work(input_file, gene_models, file_type):
 
 def main(input_files, gene_models, file_type):
 
+    logger = logging.getLogger(__name__)
+
+    genes_obj = process_gene_model(gene_models, file_type)
+
     for f in input_files:
-        print("Processing .. %s" % f, file = sys.stderr)
-        do_work(f, gene_models, file_type)
-        print("Done with %s" % f, file = sys.stderr)
+        do_work(f, genes_obj)
 
