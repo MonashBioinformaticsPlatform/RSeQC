@@ -10,7 +10,9 @@ The following reads will be skipped:
 
 #import built-in modules
 import sys
+import os
 import logging
+from multiprocessing import Process
 
 #import third-party modules
 from bx.bitset import *
@@ -172,7 +174,7 @@ def process_gene_model(gene_model, file_type):
             int_down10k_size
             )
 
-def do_work(input_file, genes_obj):
+def do_work(input_file, genes_obj, outdir):
 
     logger = logging.getLogger(__name__)
     logger.info(" Processing alignment file > %s" % input_file)
@@ -288,32 +290,51 @@ def do_work(input_file, genes_obj):
     except StopIteration:
         logger.info(" Done processing alignment file > %s" % input_file)
 
-    print("%-30s%d" % ("Total Reads",totalReads))
-    print("%-30s%d" % ("Total Tags",totalFrags))
-    print("%-30s%d" % ("Total Assigned Tags",totalFrags-unAssignFrags))
-    
-    print("=====================================================================")
-    print("%-20s%-20s%-20s%-20s" % ('Group','Total_bases','Tag_count','Tags/Kb'))
-    print("%-20s%-20d%-20d%-18.2f" % ('CDS_Exons',cds_exon_base,cds_exon_read,cds_exon_read*1000.0/(cds_exon_base+1)))
-    print("%-20s%-20d%-20d%-18.2f" % ("5'UTR_Exons",utr_5_base,utr_5_read, utr_5_read*1000.0/(utr_5_base+1)))
-    print("%-20s%-20d%-20d%-18.2f" % ("3'UTR_Exons",utr_3_base,utr_3_read, utr_3_read*1000.0/(utr_3_base+1)))
-    print("%-20s%-20d%-20d%-18.2f" % ("Introns",intron_base,intron_read,intron_read*1000.0/(intron_base+1)))
-    
-    print("%-20s%-20d%-20d%-18.2f" % ("TSS_up_1kb",intergenic_up1kb_base, intergenic_up1kb_read, intergenic_up1kb_read*1000.0/(intergenic_up1kb_base+1)))
-    print("%-20s%-20d%-20d%-18.2f" % ("TSS_up_5kb",intergenic_up5kb_base, intergenic_up5kb_read, intergenic_up5kb_read*1000.0/(intergenic_up5kb_base+1)))
-    print("%-20s%-20d%-20d%-18.2f" % ("TSS_up_10kb",intergenic_up10kb_base, intergenic_up10kb_read, intergenic_up10kb_read*1000.0/(intergenic_up10kb_base+1)))
-    print("%-20s%-20d%-20d%-18.2f" % ("TES_down_1kb",intergenic_down1kb_base, intergenic_down1kb_read, intergenic_down1kb_read*1000.0/(intergenic_down1kb_base+1)))
-    print("%-20s%-20d%-20d%-18.2f" % ("TES_down_5kb",intergenic_down5kb_base, intergenic_down5kb_read, intergenic_down5kb_read*1000.0/(intergenic_down5kb_base+1))) 
-    print("%-20s%-20d%-20d%-18.2f" % ("TES_down_10kb",intergenic_down10kb_base, intergenic_down10kb_read, intergenic_down10kb_read*1000.0/(intergenic_down10kb_base+1)))
-    print("=====================================================================")
+    #TODO A better way would if this function simply returns some dictionary/list
+    # that I can then parse out and write to file in the main function below
+    # But for now I'll go a simpler way, mainly because I don't want to spent time 
+    # understanding all diff parameters
 
+    prefix = os.path.basename(input_file).split(".bam")[0]
+    prefix = prefix + ".txt"
+    fn_out = os.path.join(outdir, prefix)
+    fd = open(fn_out, "w")
 
-def main(input_files, gene_models, file_type):
+    print("%-30s%d" % ("Total Reads",totalReads), file = fd)
+    print("%-30s%d" % ("Total Tags",totalFrags), file = fd)
+    print("%-30s%d" % ("Total Assigned Tags",totalFrags-unAssignFrags), file = fd)
+
+    print("=====================================================================", file = fd)
+    print("%-20s%-20s%-20s%-20s" % ('Group','Total_bases','Tag_count','Tags/Kb'), file = fd)
+    print("%-20s%-20d%-20d%-18.2f" % ('CDS_Exons',cds_exon_base,cds_exon_read,cds_exon_read*1000.0/(cds_exon_base+1)), file = fd)
+    print("%-20s%-20d%-20d%-18.2f" % ("5'UTR_Exons",utr_5_base,utr_5_read, utr_5_read*1000.0/(utr_5_base+1)), file = fd)
+    print("%-20s%-20d%-20d%-18.2f" % ("3'UTR_Exons",utr_3_base,utr_3_read, utr_3_read*1000.0/(utr_3_base+1)), file = fd)
+    print("%-20s%-20d%-20d%-18.2f" % ("Introns",intron_base,intron_read,intron_read*1000.0/(intron_base+1)), file = fd)
+
+    print("%-20s%-20d%-20d%-18.2f" % ("TSS_up_1kb",intergenic_up1kb_base, intergenic_up1kb_read, intergenic_up1kb_read*1000.0/(intergenic_up1kb_base+1)), file = fd)
+    print("%-20s%-20d%-20d%-18.2f" % ("TSS_up_5kb",intergenic_up5kb_base, intergenic_up5kb_read, intergenic_up5kb_read*1000.0/(intergenic_up5kb_base+1)), file = fd)
+    print("%-20s%-20d%-20d%-18.2f" % ("TSS_up_10kb",intergenic_up10kb_base, intergenic_up10kb_read, intergenic_up10kb_read*1000.0/(intergenic_up10kb_base+1)), file = fd)
+    print("%-20s%-20d%-20d%-18.2f" % ("TES_down_1kb",intergenic_down1kb_base, intergenic_down1kb_read, intergenic_down1kb_read*1000.0/(intergenic_down1kb_base+1)), file = fd)
+    print("%-20s%-20d%-20d%-18.2f" % ("TES_down_5kb",intergenic_down5kb_base, intergenic_down5kb_read, intergenic_down5kb_read*1000.0/(intergenic_down5kb_base+1)), file = fd) 
+    print("%-20s%-20d%-20d%-18.2f" % ("TES_down_10kb",intergenic_down10kb_base, intergenic_down10kb_read, intergenic_down10kb_read*1000.0/(intergenic_down10kb_base+1)), file = fd)
+    print("=====================================================================", file = fd)
+
+    fd.close()
+
+def main(input_files, gene_models, file_type, outdir):
 
     logger = logging.getLogger(__name__)
 
+    if not os.path.exists(outdir):
+        logger.info(" Making output directory > %s" % outdir)
+        os.mkdir(outdir)
+
     genes_obj = process_gene_model(gene_models, file_type)
 
+    processes = None
+
     for f in input_files:
-        do_work(f, genes_obj)
+        #do_work(f, genes_obj, outdir)
+        processes = [Process(target=do_work, args=(gene_obj, outdir))]
+
 

@@ -49,6 +49,10 @@ def arg_parser(parser = None):
                                   default = 'gtf',
                                   help = 'specify file type, supported fomats GTF or BED12, where each line is a transcript'
                                   )
+    parser_read_dist.add_argument('-o', '--outdir',
+                                  default = 'rseqc/reads_dist',
+                                  help = 'specify file type, supported fomats GTF or BED12, where each line is a transcript'
+                                  )
     
     args = parser.parse_args()
     
@@ -65,8 +69,9 @@ def main(args):
         input_files = args.input_files
         gene_models = args.gene_models
         file_type = args.file_type
+        outdir = args.outdir
 
-        get_distrib = read_dist.main(input_files, gene_models, file_type)
+        get_distrib = read_dist.main(input_files, gene_models, file_type, outdir)
 
         logger.info(' Finished read distribution calculation')
 
